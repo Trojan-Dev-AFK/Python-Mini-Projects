@@ -3,7 +3,6 @@ import boto3
 import time
 import csv
 import pandas as pd
-import numpy as np
 
 os.environ['AWS_PROFILE'] = "default"
 
