@@ -43,7 +43,7 @@ def check_docstrings(filename, check_rules=None):
                     # All the errors are handled inside DocstringValidityCheck
                     pass
             else:
-                print(f"Docstring missing for '{node.name}' in '{filename}' at line {node.lineno}")
+                print(f"E100: Docstring missing for '{node.name}' in '{filename}' at line {node.lineno}")
 
 
 if __name__ == "__main__":

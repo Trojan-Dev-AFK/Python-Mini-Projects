@@ -11,25 +11,25 @@ def is_docstring_valid(func_node):
         # Check if any line in the docstring exceeds 120 characters
         for i, line in enumerate(lines, start=1):
             if len(line) > 120:
-                errors.append(f"Line {i} in docstring of function '{func_node.name}' at line {func_node.lineno} exceeds 120 characters.")
+                errors.append(f"E105: Line {i} in docstring of function '{func_node.name}' at line {func_node.lineno} exceeds 120 characters.")
                 # return False
             
         # Checking if the docstring has a summary        
         if not lines[0].strip():
-            errors.append(f"Missing summary in docstring of function '{func_node.name}' at line {func_node.lineno}")
+            errors.append(f"E101: Missing summary in docstring of function '{func_node.name}' at line {func_node.lineno}")
             # return False
         
         # Checking if parameters are documented
         params_in_doc = {match.group(1) for match in re.finditer(r":param (\w+):", docstring)}
         params_in_def = {arg.arg for arg in func_node.args.args if arg.arg != 'self'}
         if params_in_def != params_in_doc:
-            errors.append(f"Parameters mismatch in docstring of function '{func_node.name}' at line {func_node.lineno}")
+            errors.append(f"E102: Parameters mismatch in docstring of function '{func_node.name}' at line {func_node.lineno}")
             # return False
         
         # Checking if return is documented (if the function returns something)
         if func_node.returns is not None:
             if ':return:' not in docstring:
-                errors.append(f"Return not documented in function '{func_node.name}' at line {func_node.lineno}")
+                errors.append(f"E103: Return not documented in function '{func_node.name}' at line {func_node.lineno}")
                 # return False
                 
         # Check if exceptions are raised and documented with exception names
@@ -45,12 +45,12 @@ def is_docstring_valid(func_node):
         exceptions_documented = set(re.findall(r":raises (\w+):", docstring))
         
         if exceptions_raised != exceptions_documented:
-            errors.append(f"Exception names mismatch in function '{func_node.name}' at line {func_node.lineno}")
+            errors.append(f"E104: Exception names mismatch in function '{func_node.name}' at line {func_node.lineno}")
             # return False
 
         # Check for an empty line after the summary [Only handle one line summary]
         if len(lines) > 1 and lines[1].strip():
-            errors.append(f"No empty line after the summary in docstring of function '{func_node.name}' at line {func_node.lineno}.")
+            errors.append(f"E106: No empty line after the summary in docstring of function '{func_node.name}' at line {func_node.lineno}.")
             # return False
 
         # Check for an empty line after the summary [Handles multi-line summary. But doesnt recognize if there is no empty line before :param and takes it as summary]
@@ -66,7 +66,7 @@ def is_docstring_valid(func_node):
             if indices:
                 last_index = indices[-1]
                 if last_index + 1 >= len(lines) or lines[last_index + 1].strip():
-                    errors.append(f"No empty line after '{section}' section in docstring of function '{func_node.name}' at line {func_node.lineno}.")
+                    errors.append(f"E106: No empty line after '{section}' section in docstring of function '{func_node.name}' at line {func_node.lineno}.")
                     # return False
                 
     else:
