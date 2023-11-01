@@ -19,7 +19,7 @@ The format of a correct docstring is as below,
 ## Basic Checks:
 
 - Should take a dictionary as input with three rules. If a dictionary is not passed the default values for that dictionary will be used.
-    `check_rules = {'check_dunder': True, 'check_private': True, 'check_protected': True}`
+        `check_rules = {'check_dunder': True, 'check_private': True, 'check_protected': True}`
     - check_dunder (default: True) -> Check dunder (magic) methods [e.g. __init__(), __repr__(), etc...]
     - check_private (default: True) -> Check private methods [e.g __is_valid(), __is_present(), etc...]
     - check_protected (default: True) -> Check protected methods [e.g. _check_age(), _check_line_length(), etc...]
