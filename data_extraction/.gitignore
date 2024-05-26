@@ -1,2 +1,5 @@
-example_data
 venv
+example_data
+output_models
+output_csv
+output_json

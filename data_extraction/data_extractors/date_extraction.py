@@ -8,9 +8,10 @@ Install dependencies from requirements file `pip install -r ./requirements.txt`
 ## Usage
 
 date_extractor = DateExtractor()
-results = date_extractor.get_dates('./data/output2/')
-print(results)
+date_results = date_extractor.get_dates('./example_data/output2/dates/')
+print(date_results)
 """
+import json
 
 import cv2
 import pytesseract
@@ -25,13 +26,16 @@ import logging
 # Suppress specific warnings from transformers
 warnings.filterwarnings('ignore', message='Using the model-agnostic default `max_length`')
 
-# Set up logging
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
-
 
 class DateExtractor:
     def __init__(self, model_path=None):
+        self.logger = None
+        self.setup_logging()
         self.model, self.processor = self.load_model(model_path)
+
+    def setup_logging(self):
+        logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+        self.logger = logging.getLogger(__name__)
 
     @staticmethod
     def load_model(model_path=None):
@@ -43,8 +47,8 @@ class DateExtractor:
             processor = TrOCRProcessor.from_pretrained("microsoft/trocr-base-handwritten")
         return model, processor
 
-    @staticmethod
-    def preprocess_image(image_path):
+    def preprocess_image(self, image_path):
+        self.logger.debug(f"Preprocessing image: {image_path}")
         img = cv2.imread(image_path)
         if img is None:
             return None
@@ -94,8 +98,7 @@ class DateExtractor:
         return None
 
     def get_dates(self, folder_path):
-        predictions = []
-        file_names = []
+        result = {}
 
         for file_name in os.listdir(folder_path):
             if file_name.endswith('.jpg') or file_name.endswith('.jpeg') or file_name.endswith('.png'):
@@ -107,21 +110,21 @@ class DateExtractor:
 
                     predicted_date = self.recognize_system_date_from_images(preprocessed_image)
                     if predicted_date:
-                        predictions.append(predicted_date)
+                        result[file_name] = predicted_date
                     else:
                         predicted_date = self.recognize_handwritten_date_from_images(full_file_path)
                         if predicted_date:
-                            predictions.append(predicted_date)
+                            result[file_name] = predicted_date
                         else:
-                            predictions.append(None)
+                            result[file_name] = None
 
-                    file_names.append(file_name)
-                    logging.info(f"File: {full_file_path} -> Extracted Date: {predicted_date}")
+                    self.logger.info(f"File: {full_file_path} -> Extracted Date: {predicted_date}")
                 except Exception as e:
-                    # logging.error(f"Error processing {full_file_path}: {e}")
+                    self.logger.debug(f"Error processing {full_file_path}: {e}")
                     continue
+        return result
 
-        return {
-            "file_names": file_names,
-            "predictions": predictions
-        }
+    def save_results_to_json(self, results, output_file):
+        self.logger.info(f"Saving results to JSON file: {output_file}")
+        with open(output_file, 'w') as f:
+            json.dump(results, f)
