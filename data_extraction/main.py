@@ -5,7 +5,7 @@ from data_extractors.signature_detection import SignatureDetector
 def main():
     # Date Extraction
     date_extractor = DateExtractor()
-    date_results = date_extractor.get_dates('./example_data/output2/dates/')
+    date_results = date_extractor.extract_dates('./example_data/output2/dates/')
     # Save the results to a JSON file
     output_file = './output_json/date_results.json'
     date_extractor.save_results_to_json(date_results, output_file)

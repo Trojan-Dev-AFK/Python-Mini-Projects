@@ -8,7 +8,7 @@ Install dependencies from requirements file `pip install -r ./requirements.txt`
 ## Usage
 
 date_extractor = DateExtractor()
-date_results = date_extractor.get_dates('./example_data/output2/dates/')
+date_results = date_extractor.extract_dates('./example_data/output2/dates/')
 print(date_results)
 """
 import json
@@ -97,7 +97,7 @@ class DateExtractor:
                 return extracted_handwritten_date
         return None
 
-    def get_dates(self, folder_path):
+    def extract_dates(self, folder_path):
         result = {}
 
         for file_name in os.listdir(folder_path):
