@@ -2,8 +2,7 @@ from data_extractors.date_extraction import DateExtractor
 from data_extractors.signature_detection import SignatureDetector
 
 
-if __name__ == "__main__":
-
+def main():
     # Date Extraction
     date_extractor = DateExtractor()
     date_results = date_extractor.get_dates('./example_data/output2/dates/')
@@ -19,3 +18,7 @@ if __name__ == "__main__":
     output_file = './output_json/signature_results.json'
     signature_detector.save_results_to_json(signature_results, output_file)
     print(signature_results)
+
+
+if __name__ == "__main__":
+    main()
