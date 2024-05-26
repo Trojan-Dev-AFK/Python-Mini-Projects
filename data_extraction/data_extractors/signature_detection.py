@@ -8,7 +8,7 @@ Install dependencies from requirements file `pip install -r ./requirements.txt`
 ## Usage
 
 signature_detector = SignatureDetector('./output_models/best_signature_vs_text_model.h5')
-signature_results = signature_detector.process_images('./example_data/output3/timestamps/')
+signature_results = signature_detector.detect_signatures('./example_data/output3/timestamps/')
 print(signature_results)
 """
 import json
@@ -51,7 +51,7 @@ class SignatureDetector:
         prediction = self.model.predict(image)
         return bool(prediction[0] > 0.5)
 
-    def process_images(self, base_dir):
+    def detect_signatures(self, base_dir):
         results = {}
         self.logger.info(f"Processing images in directory: {base_dir}")
         for filename in os.listdir(base_dir):

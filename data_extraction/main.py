@@ -13,7 +13,7 @@ def main():
 
     # Signature Detection
     signature_detector = SignatureDetector('./output_models/best_signature_vs_text_model.h5')
-    signature_results = signature_detector.process_images('./example_data/output3/signs/')
+    signature_results = signature_detector.detect_signatures('./example_data/output3/signs/')
     # Save the results to a JSON file
     output_file = './output_json/signature_results.json'
     signature_detector.save_results_to_json(signature_results, output_file)
