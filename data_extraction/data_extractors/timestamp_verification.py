@@ -19,7 +19,7 @@ import os
 import json
 
 
-class TimestampExtractor:
+class TimestampChecker:
     def __init__(self):
         self.results = {}
 

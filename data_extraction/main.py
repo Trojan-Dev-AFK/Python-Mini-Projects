@@ -1,6 +1,6 @@
 from data_extractors.date_extraction import DateExtractor
 from data_extractors.signature_detection import SignatureDetector
-from data_extractors.timestamp_extraction import TimestampExtractor
+from data_extractors.timestamp_verification import TimestampChecker
 
 
 def main():
@@ -22,8 +22,8 @@ def main():
     print(signature_results)
 
     # Timestamp Extraction
-    timestamp_extractor = TimestampExtractor()
-    are_timestamps_same = timestamp_extractor.check_timestamp_is_same("./example_data/output3/timestamps/")
+    timestamp_checker = TimestampChecker()
+    are_timestamps_same = timestamp_checker.check_timestamp_is_same("./example_data/output3/timestamps/")
     print(f"Are timestamps same: {are_timestamps_same}")
 
 
