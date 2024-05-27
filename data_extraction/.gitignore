@@ -1,4 +1,5 @@
 venv
+svenv
 example_data
 output_models
 output_csv
