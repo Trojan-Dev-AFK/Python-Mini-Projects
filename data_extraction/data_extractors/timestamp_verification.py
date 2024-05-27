@@ -73,7 +73,7 @@ class TimestampChecker:
                 formatted_dates = formatted_dates[-1]
             else:
                 formatted_dates = formatted_dates[0]
-            print(f"Date {img_path} -> Timestamp: {formatted_dates}")
+            print(f"File {img_path} -> Timestamp: {formatted_dates}")
 
             return formatted_dates if formatted_dates else None
 
