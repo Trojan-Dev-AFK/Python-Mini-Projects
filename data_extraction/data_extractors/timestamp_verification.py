@@ -29,6 +29,13 @@ class TimestampChecker:
             img = Image.open(img_path)
             ocr_text = pytesseract.image_to_string(img)
 
+            # Confidence
+            confidences = pytesseract.image_to_data(img, output_type=pytesseract.Output.DICT)
+
+            # Filter out non-empty confidences and calculate average
+            confidence_values = [float(conf) for conf in confidences['conf'] if conf]
+            final_confidence = round(sum(confidence_values)/len(confidence_values))
+
             date_regexes = [
                 r'\b\d{1,2}[./-]\d{1,2}[./-]\d{2,4}\b',  # e.g., 01/31/2024 or 1-1-23
                 r'\b\d{1,2} (?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]* \d{2,4}\b',  # e.g., 1 Jan 2024
@@ -73,9 +80,9 @@ class TimestampChecker:
                 formatted_dates = formatted_dates[-1]
             else:
                 formatted_dates = formatted_dates[0]
-            print(f"File {img_path} -> Timestamp: {formatted_dates}")
+            print(f"File {img_path} -> Timestamp: {formatted_dates} -> Confidence: {final_confidence}")
 
-            return formatted_dates if formatted_dates else None
+            return formatted_dates, final_confidence if formatted_dates else (None, None)
 
         except Exception as e:
             return f"Error: {str(e)}"
@@ -85,14 +92,14 @@ class TimestampChecker:
         for file in files:
             if file.endswith(".jpg") or file.endswith(".jpeg") or file.endswith(".png"):
                 image_path = os.path.join(folder_path, file)
-                dates = self.get_date(image_path)
-                self.results[file] = dates
+                date_with_confidence = self.get_date(image_path)
+                self.results[file] = date_with_confidence
         return self.results
 
     def check_timestamp_is_same(self, folder_path):
         results = self.extract_timestamps(folder_path)
         values = list(results.values())
-        unique_values = set(tuple(v) for v in values if v is not None)
+        unique_values = set(tuple(v[0]) for v in values if v is not None)
         return len(unique_values) == 1
 
     @staticmethod

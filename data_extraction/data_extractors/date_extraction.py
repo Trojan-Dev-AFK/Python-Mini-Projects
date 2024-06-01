@@ -81,10 +81,16 @@ class DateExtractor:
     def recognize_system_date_from_images(self, preprocessed_image):
         if preprocessed_image is not None:
             extracted_system_text = pytesseract.image_to_string(preprocessed_image, config='--oem 3 --psm 6')
+            # Confidence
+            confidences = pytesseract.image_to_data(preprocessed_image, output_type=pytesseract.Output.DICT)
+
+            # Filter out non-empty confidences and calculate average
+            confidence_values = [float(conf) for conf in confidences['conf'] if conf]
+            final_confidence = round(sum(confidence_values) / len(confidence_values))
             extracted_system_date = self.find_date_in_text(extracted_system_text)
             if extracted_system_date:
-                return extracted_system_date
-        return None
+                return extracted_system_date, final_confidence
+        return None, None
 
     def recognize_handwritten_date_from_images(self, image_path):
         preprocessed_pil_image = Image.open(image_path).convert("RGB")
@@ -94,7 +100,7 @@ class DateExtractor:
             extracted_handwritten_text = self.processor.batch_decode(generated_ids, skip_special_tokens=True)[0]
             extracted_handwritten_date = self.find_date_in_text(extracted_handwritten_text)
             if extracted_handwritten_date:
-                return extracted_handwritten_date
+                return extracted_handwritten_date, "NIL"
         return None
 
     def extract_dates(self, folder_path):
@@ -118,7 +124,8 @@ class DateExtractor:
                         else:
                             result[file_name] = None
 
-                    self.logger.info(f"File: {full_file_path} -> Extracted Date: {predicted_date}")
+                    self.logger.info(f"File: {full_file_path} -> Extracted Date: {predicted_date[0]} -> "
+                                     f"Confidence: {predicted_date[1]}")
                 except Exception as e:
                     self.logger.debug(f"Error processing {full_file_path}: {e}")
                     continue
