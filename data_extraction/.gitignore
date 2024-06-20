@@ -4,3 +4,6 @@ example_data
 output_models
 output_csv
 output_json
+__pycache__
+.idea
+.mypy_cache
